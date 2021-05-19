@@ -7,9 +7,7 @@
 #SBATCH -o output-%j.out
 
 # Cargando los modulos necesarios
-module load gcc/9.3.0
-module load openmpi/3.0.6
-source /home/ghinojosa/opt/abinit-8.10.3/env.sh
+module load abinit/8.10.3
 
 FOLDER_RESULTS="results-${SLURM_JOB_ID}"
 FOLDER_TO_PROCESS="to-process"
