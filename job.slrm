@@ -1,0 +1,36 @@
+#!/bin/bash
+#SBATCH -J test-abinit
+#SBATCH --time=720:00:00
+#SBATCH -N 2
+#SBATCH --tasks-per-node=12
+#SBATCH -e output-%j.log
+#SBATCH -o output-%j.out
+
+# Cargando los modulos necesarios
+module load abinit/8.10.3
+
+FOLDER_RESULTS="results-${SLURM_JOB_ID}"
+FOLDER_TO_PROCESS="to-process"
+
+# Creamos la carpeta en donde se alamcenara los resultados
+mkdir $FOLDER_RESULTS
+
+# Mostrando la informacion
+echo "El directorio de trabajo es: ${SLURM_SUBMIT_DIR}"
+INICIO="$(date +'%d/%m/%Y %H:%M:%S')"
+echo "El job fue lanzado a las: $INICIO"
+echo "El id del job es: $SLURM_JOB_ID"
+echo "Los resultados fueron almacenados en la carpeta: $FOLDER_RESULTS"
+
+echo La version de OpenMPI es: $(mpiexec --version | head -n 1 | cut -d " " -f 3)
+echo La version de Abinit es: $(abinit --version)
+# Fin de Mostrando la informacion
+
+cd $FOLDER_TO_PROCESS
+
+mpirun abinit < tdfpt_03.files > abinit.log
+
+mv *.log *.out *.o_* $SLURM_SUBMIT_DIR/$FOLDER_RESULTS
+
+FIN="$(date +'%d/%m/%Y %H:%M:%S')"
+echo "El job termino a las: $FIN"
